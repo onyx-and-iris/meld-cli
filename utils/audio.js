@@ -1,8 +1,12 @@
 import meowHelp from 'cli-meow-help'
+import Table from 'cli-table3'
 
 import { highlight, error } from './style.js'
 
 const commands = {
+  list: {
+    desc: 'List all audio devices'
+  },
   mute: {
     desc: 'Mute the audio'
   },
@@ -32,6 +36,40 @@ const audioHelp = meowHelp({
   desc: 'Manage audio settings in Meld',
   defaults: false
 })
+
+function audioList (channel, showId) {
+  if (!channel.objects || !channel.objects.meld) {
+    return Promise.reject(new Error('Meld object not found in channel.'))
+  }
+
+  const headers = [{ content: 'Audio Name', hAlign: 'center' }, { content: 'Muted', hAlign: 'center' }]
+  if (showId) {
+    headers.push({ content: 'ID', hAlign: 'center' })
+  }
+  const table = new Table({
+    style: {
+      head: ['none'],
+      compact: true
+    },
+    head: headers
+  })
+
+  const meld = channel.objects.meld
+  for (const [key, value] of Object.entries(meld.session.items)) {
+    if (value.type === 'track') {
+      if (showId) {
+        table.push([highlight(value.name), { content: value.muted ? highlight('✓') : '✗', hAlign: 'center' }, highlight(key)])
+      } else {
+        table.push([highlight(value.name), { content: value.muted ? highlight('✓') : '✗', hAlign: 'center' }])
+      }
+    }
+  }
+
+  if (table.length === 0) {
+    return Promise.resolve('No audio devices found.')
+  }
+  return Promise.resolve(table)
+}
 
 function audioMute (channel, audioName) {
   if (!channel.objects || !channel.objects.meld) {
@@ -151,6 +189,7 @@ function audioStatus (channel, audioName) {
 
 export {
   audioHelp,
+  audioList,
   audioMute,
   audioUnmute,
   audioToggle,

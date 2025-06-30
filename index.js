@@ -5,7 +5,7 @@ import WebSocket from 'ws'
 
 import cli from './utils/cli.js'
 import { sceneHelp, sceneList, sceneSwitch, sceneCurrent } from './utils/scene.js'
-import { audioHelp, audioMute, audioUnmute, audioToggle, audioStatus } from './utils/audio.js'
+import { audioHelp, audioList, audioMute, audioUnmute, audioToggle, audioStatus } from './utils/audio.js'
 import { streamHelp, streamStart, streamStop, streamStatus } from './utils/stream.js'
 import { recordHelp, recordStart, recordStop, recordStatus } from './utils/record.js'
 
@@ -34,8 +34,8 @@ socket.onopen = function () {
           case 'list':
             channel = new QWebChannel(socket, function (channel) {
               sceneList(channel, flags.id)
-                .then((scenes) => {
-                  console.log(scenes)
+                .then((table) => {
+                  console.log(table.toString())
                   socket.close()
                   process.exit(0)
                 })
@@ -96,6 +96,21 @@ socket.onopen = function () {
         const audioCommand = input[1]
         const audioName = input[2]
         switch (audioCommand) {
+          case 'list':
+            channel = new QWebChannel(socket, function (channel) {
+              audioList(channel, flags.id)
+                .then((table) => {
+                  console.log(table.toString())
+                  socket.close()
+                  process.exit(0)
+                })
+                .catch((err) => {
+                  console.error(`${err}`)
+                  socket.close()
+                  process.exit(1)
+                })
+            })
+            break
           case 'mute':
             if (!audioName) {
               console.error('Error: Audio name is required for the mute command.')

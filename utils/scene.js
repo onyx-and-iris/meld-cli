@@ -65,7 +65,7 @@ function sceneList (channel, showId) {
   if (table.length === 0) {
     return Promise.reject(new Error('No scenes found.'))
   }
-  return Promise.resolve(table.toString())
+  return Promise.resolve(table)
 }
 
 function sceneSwitch (channel, sceneName) {
