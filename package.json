@@ -1,6 +1,6 @@
 {
   "name": "@onyx-and-iris/meld-cli",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "A command line interface for Meld Studio WebChannel API",
   "keywords": [
     "meld",
