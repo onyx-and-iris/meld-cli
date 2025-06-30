@@ -66,6 +66,16 @@ meld-cli scene current --id
 
 #### Audio
 
+-   list: List all audio devices
+    -   flags: 
+        -   --id: Display audio IDs
+
+```console
+meld-cli audio list
+
+meld-cli audio list --id
+```
+
 -   mute: Mute the audio
     - args: audioName
 
