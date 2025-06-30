@@ -2,6 +2,7 @@
 
 import cli from "./utils/cli.js";
 import { sceneHelp, sceneList, sceneSwitch, sceneCurrent } from "./utils/scene.js";
+import { audioHelp, audioMute, audioUnmute, audioToggle, audioStatus } from "./utils/audio.js";
 import { QWebChannel } from "qwebchannel";
 
 
@@ -26,8 +27,8 @@ socket.onopen = function() {
                         process.exit(0);
                     }
 
-                    const subcommand = input[1];
-                    switch (subcommand) {
+                    const sceneCommand = input[1];
+                    switch (sceneCommand) {
                         case "list":
                             channel = new QWebChannel(socket, function (channel) {
                                 sceneList(channel)
@@ -91,6 +92,91 @@ socket.onopen = function() {
                             break;
                         default:
                             console.log(sceneHelp);
+                            socket.close();
+                            process.exit(0);
+                    }
+                
+                case "audio":
+                    if (flags.help) {
+                        console.log(audioHelp);
+                        socket.close();
+                        process.exit(0);
+                    }
+
+                    const audioCommand = input[1];
+                    const audioName = input[2];
+                    switch (audioCommand) {
+                        case "mute":
+                            if (!audioName) {
+                                console.error("Error: Audio name is required for the mute command.");
+                                process.exit(1);
+                            }
+
+                            channel = new QWebChannel(socket, function (channel) {
+                                audioMute(channel, audioName)
+                                    .then((message) => {
+                                        console.log(message);
+                                        socket.close();
+                                        process.exit(0);
+                                    })
+                                    .catch((err) => {
+                                        console.error(`${err}`);
+                                        socket.close();
+                                        process.exit(1);
+                                    });
+                            });
+                            break;
+                        case "unmute":
+                            if (!audioName) {
+                                console.error("Error: Audio name is required for the mute command.");
+                                process.exit(1);
+                            }
+                            channel = new QWebChannel(socket, function (channel) {
+                                audioUnmute(channel, audioName)
+                                    .then((message) => {
+                                        console.log(message);
+                                        socket.close();
+                                        process.exit(0);
+                                    })
+                                    .catch((err) => {
+                                        console.error(`${err}`);
+                                        socket.close();
+                                        process.exit(1);
+                                    });
+                            });
+                            break;
+                        case "toggle":
+                            channel = new QWebChannel(socket, function (channel) {
+                                audioToggle(channel, audioName)
+                                    .then((message) => {
+                                        console.log(message);
+                                        socket.close();
+                                        process.exit(0);
+                                    })
+                                    .catch((err) => {
+                                        console.error(`${err}`);
+                                        socket.close();
+                                        process.exit(1);
+                                    });
+                            });
+                            break;
+                        case "status":
+                            channel = new QWebChannel(socket, function (channel) {
+                                audioStatus(channel, audioName)
+                                    .then((status) => {
+                                        console.log(`${audioName} is ${status ? "muted" : "unmuted"}`);
+                                        socket.close();
+                                        process.exit(0);
+                                    })
+                                    .catch((err) => {
+                                        console.error(`Error fetching audio status: ${err}`);
+                                        socket.close();
+                                        process.exit(1);
+                                    });
+                            });
+                            break;
+                        default:
+                            console.log(audioHelp);
                             socket.close();
                             process.exit(0);
                     }

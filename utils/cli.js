@@ -5,6 +5,9 @@ const commands = {
     scene: {
         desc: "Manage scenes",
     },
+    audio: {
+        desc: "Manage audio settings",
+    },
 };
 
 const flags = {
