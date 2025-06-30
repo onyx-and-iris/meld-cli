@@ -75,7 +75,7 @@ function sceneSwitch(channel, sceneName) {
 
 function sceneCurrent(channel) {
     if (!channel.objects || !channel.objects.meld) {
-        throw new Error("Meld object not found in channel.");
+        return Promise.reject(new Error("Meld object not found in channel."));
     }
 
     const meld = channel.objects.meld;
