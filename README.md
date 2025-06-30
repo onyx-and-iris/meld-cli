@@ -44,7 +44,7 @@ meld-cli scene list
 ```
 
 -   switch: Switch to a scene by name
-    - args: <sceneName>
+    - args: sceneName
 
 ```console
 meld-cli scene switch "My Scene"
@@ -59,28 +59,28 @@ meld-cli scene current
 #### Audio
 
 -   mute: Mute the audio
-    - args: <audioName>
+    - args: audioName
 
 ```console
 meld-cli audio mute "Mic"
 ```
 
 -   unmute: Unmute the audio
-    - args: <audioName>
+    - args: audioName
 
 ```console
 meld-cli audio unmute "Mic"
 ```
 
 -   toggle: Toggle audio mute state
-    - args: <audioName>
+    - args: audioName
 
 ```console
 meld-cli audio toggle "Mic"
 ```
 
 -   status: Show current audio status
-    - args: <audioName>
+    - args: audioName
 
 ```console
 meld-cli audio status "Mic"
