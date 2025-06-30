@@ -11,6 +11,9 @@ const commands = {
     stream: {
         desc: "Manage streaming",
     },
+    record: {
+        desc: "Manage recording",
+    },
 };
 
 const flags = {

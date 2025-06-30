@@ -4,6 +4,7 @@ import cli from "./utils/cli.js";
 import { sceneHelp, sceneList, sceneSwitch, sceneCurrent } from "./utils/scene.js";
 import { audioHelp, audioMute, audioUnmute, audioToggle, audioStatus } from "./utils/audio.js";
 import { streamHelp, streamStart, streamStop, streamStatus } from "./utils/stream.js";
+import { recordHelp, recordStart, recordStop, recordStatus } from "./utils/record.js";
 import { QWebChannel } from "qwebchannel";
 
 
@@ -241,6 +242,66 @@ socket.onopen = function() {
                             socket.close();
                             process.exit(0);
                     }
+
+                case "record":
+                    if (flags.help) {
+                        console.log(recordHelp);
+                        socket.close();
+                        process.exit(0);
+                    }
+
+                    const recordCommand = input[1];
+                    switch (recordCommand) {
+                        case "start":
+                            channel = new QWebChannel(socket, function (channel) {
+                                recordStart(channel)
+                                    .then((message) => {
+                                        console.log(message);
+                                        socket.close();
+                                        process.exit(0);
+                                    })
+                                    .catch((err) => {
+                                        console.error(`${err}`);
+                                        socket.close();
+                                        process.exit(1);
+                                    });
+                            });
+                            break;
+                        case "stop":
+                            channel = new QWebChannel(socket, function (channel) {
+                                recordStop(channel)
+                                    .then((message) => {
+                                        console.log(message);
+                                        socket.close();
+                                        process.exit(0);
+                                    })
+                                    .catch((err) => {
+                                        console.error(`${err}`);
+                                        socket.close();
+                                        process.exit(1);
+                                    });
+                            });
+                            break;
+                        case "status":
+                            channel = new QWebChannel(socket, function (channel) {
+                                recordStatus(channel)
+                                    .then((isRecording) => {
+                                        console.log(`Recording is currently ${isRecording ? "active" : "inactive"}`);
+                                        socket.close();
+                                        process.exit(0);
+                                    })
+                                    .catch((err) => {
+                                        console.error(`Error fetching recording status: ${err}`);
+                                        socket.close();
+                                        process.exit(1);
+                                    });
+                            });
+                            break;
+                        default:
+                            console.log(recordHelp);
+                            socket.close();
+                            process.exit(0);
+                        }
             }
         } catch (error) {
             console.error("Error handling CLI flags:", error);
