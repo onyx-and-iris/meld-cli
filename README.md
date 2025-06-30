@@ -38,9 +38,13 @@ MELD_CLI_PORT=13376
 #### Scene
 
 -   list: List all scenes
+    -   flags: 
+        -   --id: Display scene IDs
 
 ```console
 meld-cli scene list
+
+meld-cli scene list --id
 ```
 
 -   switch: Switch to a scene by name
@@ -51,9 +55,13 @@ meld-cli scene switch "My Scene"
 ```
 
 -   current: Show the current scene
+    -   flags: 
+        -   --id: Display scene ID
 
 ```console
 meld-cli scene current
+
+meld-cli scene current --id
 ```
 
 #### Audio
