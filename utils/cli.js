@@ -20,13 +20,11 @@ const flags = {
   host: {
     type: 'string',
     shortFlag: 'H',
-    default: 'localhost',
     desc: 'Host address for the Meld server'
   },
   port: {
     type: 'number',
     shortFlag: 'P',
-    default: 13376,
     desc: 'Port number for the Meld server'
   },
   help: {

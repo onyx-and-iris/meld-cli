@@ -270,7 +270,7 @@ socket.onopen = function () {
             })
             break
           case 'status':
-            channel = new QWebChannel(socket, function (channel) {
+            channel = new QWebChannel(socket, function (channel) { // eslint-disable-line no-unused-vars
               recordStatus(channel)
                 .then((message) => {
                   console.log(message)

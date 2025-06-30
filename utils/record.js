@@ -2,13 +2,13 @@ import meowHelp from 'cli-meow-help'
 
 const commands = {
   start: {
-    desc: 'Start streaming'
+    desc: 'Start recording'
   },
   stop: {
-    desc: 'Stop streaming'
+    desc: 'Stop recording'
   },
   status: {
-    desc: 'Show the current streaming status'
+    desc: 'Show the current recording status'
   }
 }
 
