@@ -13,6 +13,12 @@ const commands = {
   },
   record: {
     desc: 'Manage recording'
+  },
+  clip: {
+    desc: 'Save a clip'
+  },
+  screenshot: {
+    desc: 'Take a screenshot'
   }
 }
 

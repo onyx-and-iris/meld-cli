@@ -270,7 +270,7 @@ socket.onopen = function () {
             })
             break
           case 'status':
-            channel = new QWebChannel(socket, function (channel) { // eslint-disable-line no-unused-vars
+            channel = new QWebChannel(socket, function (channel) {
               recordStatus(channel)
                 .then((message) => {
                   console.log(message)
@@ -289,6 +289,46 @@ socket.onopen = function () {
             socket.close()
             process.exit(0)
         }
+      } else if (input[0] === 'clip') {
+        if (flags.help) {
+          console.log(`usage: meld-cli clip`)
+          socket.close()
+          process.exit(0)
+        }
+
+        channel = new QWebChannel(socket, function (channel) {
+          const meld = channel.objects.meld
+
+          meld.sendCommand('meld.recordClip').then(() => {
+            console.log('Clip command sent successfully.')
+            socket.close()
+            process.exit(0)
+          }).catch((err) => {
+            console.error(`${err}`)
+            socket.close()
+            process.exit(1)
+          })
+        })
+      } else if (input[0] === 'screenshot') {
+        if (flags.help) {
+          console.log(`usage: meld-cli screenshot`)
+          socket.close()
+          process.exit(0)
+        }
+
+        channel = new QWebChannel(socket, function (channel) {
+          const meld = channel.objects.meld
+
+          meld.sendCommand('meld.screenshot').then(() => {
+            console.log('Screenshot command sent successfully.')
+            socket.close()
+            process.exit(0)
+          }).catch((err) => {
+            console.error(`${err}`)
+            socket.close()
+            process.exit(1)
+          })
+        })
       } else {
         console.log('Unknown command. Use meld-cli --help for available commands.')
         socket.close()
