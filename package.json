@@ -22,6 +22,9 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "bin": {
+    "meld-cli": "index.js"
+  },
   "dependencies": {
     "cli-meow-help": "^4.0.0",
     "meow": "^13.2.0",
