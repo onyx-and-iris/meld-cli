@@ -8,6 +8,9 @@ const commands = {
     audio: {
         desc: "Manage audio settings",
     },
+    stream: {
+        desc: "Manage streaming",
+    },
 };
 
 const flags = {

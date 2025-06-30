@@ -3,6 +3,7 @@
 import cli from "./utils/cli.js";
 import { sceneHelp, sceneList, sceneSwitch, sceneCurrent } from "./utils/scene.js";
 import { audioHelp, audioMute, audioUnmute, audioToggle, audioStatus } from "./utils/audio.js";
+import { streamHelp, streamStart, streamStop, streamStatus } from "./utils/stream.js";
 import { QWebChannel } from "qwebchannel";
 
 
@@ -177,6 +178,66 @@ socket.onopen = function() {
                             break;
                         default:
                             console.log(audioHelp);
+                            socket.close();
+                            process.exit(0);
+                    }
+
+                case "stream":
+                    if (flags.help) {
+                        console.log(streamHelp);
+                        socket.close();
+                        process.exit(0);
+                    }
+
+                    const streamCommand = input[1];
+                    switch (streamCommand) {
+                        case "start":
+                            channel = new QWebChannel(socket, function (channel) {
+                                streamStart(channel)
+                                    .then((message) => {
+                                        console.log(message);
+                                        socket.close();
+                                        process.exit(0);
+                                    })
+                                    .catch((err) => {
+                                        console.error(`${err}`);
+                                        socket.close();
+                                        process.exit(1);
+                                    });
+                            });
+                            break;
+                        case "stop":
+                            channel = new QWebChannel(socket, function (channel) {
+                                streamStop(channel)
+                                    .then((message) => {
+                                        console.log(message);
+                                        socket.close();
+                                        process.exit(0);
+                                    })
+                                    .catch((err) => {
+                                        console.error(`${err}`);
+                                        socket.close();
+                                        process.exit(1);
+                                    });
+                            });
+                            break;
+                        case "status":
+                            channel = new QWebChannel(socket, function (channel) {
+                                streamStatus(channel)
+                                    .then((isStreaming) => {
+                                        console.log(`Streaming is currently ${isStreaming ? "active" : "inactive"}`);
+                                        socket.close();
+                                        process.exit(0);
+                                    })
+                                    .catch((err) => {
+                                        console.error(`Error fetching stream status: ${err}`);
+                                        socket.close();
+                                        process.exit(1);
+                                    });
+                            });
+                            break;
+                        default:
+                            console.log(streamHelp);
                             socket.close();
                             process.exit(0);
                     }
