@@ -2,7 +2,7 @@
 
 A command line interface for Meld Studio WebChannel API
 
-[![Code Style](https://img.shields.io/badge/code_style-standard-violet.svg)](https://github.com/standardrb/standard)
+[![Code Style](https://img.shields.io/badge/code_style-standard-violet.svg)](https://github.com/standard/standard)
 
 ---
 
@@ -132,6 +132,22 @@ meld-cli record stop
 
 ```console
 meld-cli record status
+```
+
+#### Clip
+
+Save a clip
+
+```console
+meld-cli clip
+```
+
+#### Screenshot
+
+Take a screenshot
+
+```console
+meld-cli screenshot
 ```
 
 ## Special Thanks
