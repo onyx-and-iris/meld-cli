@@ -16,12 +16,12 @@ const flags = {
     help: {
         type: "boolean",
         shortFlag: "h",
-        description: "Display help information"
+        desc: "Display help information"
     },
 };
 
 const sceneHelp = meowHelp({
-    name: "meld-cli",
+    name: "meld-cli scene",
     flags,
     commands,
     description: "Manage scenes in Meld",
