@@ -128,7 +128,7 @@ meld-cli record status
 
 ## Special Thanks
 
--   [Meld] for providing the [WebChannel API](https://github.com/MeldStudio/streamdeck/blob/main/WebChannelAPI.md) on which this CLI depends.
+-   Meld team for providing the [WebChannel API](https://github.com/MeldStudio/streamdeck/blob/main/WebChannelAPI.md) on which this CLI depends.
 
 ## License
 
