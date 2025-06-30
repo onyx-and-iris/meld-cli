@@ -9,11 +9,11 @@ import { audioHelp, audioMute, audioUnmute, audioToggle, audioStatus } from './u
 import { streamHelp, streamStart, streamStop, streamStatus } from './utils/stream.js'
 import { recordHelp, recordStart, recordStop, recordStatus } from './utils/record.js'
 
-const address = process.env.MELD_CLI_HOST || 'localhost'
-const port = process.env.MELD_CLI_PORT || 13376
-
 const input = cli.input
 const flags = cli.flags
+
+const address = flags.host || process.env.MELD_CLI_HOST || 'localhost'
+const port = flags.port || process.env.MELD_CLI_PORT || 13376
 
 const socket = new WebSocket(`ws://${address}:${port}`)
 
