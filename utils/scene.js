@@ -5,13 +5,13 @@ import { highlight, error, errorHighlight } from './style.js'
 
 const commands = {
   list: {
-    desc: 'List all scenes'
+    desc: 'List all scenes, optionally showing IDs'
   },
   switch: {
     desc: 'Switch to a scene by name'
   },
   current: {
-    desc: 'Show the current scene'
+    desc: 'Show the current scene, optionally showing its ID'
   }
 }
 
@@ -20,6 +20,10 @@ const flags = {
     type: 'boolean',
     shortFlag: 'h',
     desc: 'Display help information'
+  },
+  id: {
+    type: 'boolean',
+    desc: 'Display scene IDs'
   }
 }
 
@@ -27,27 +31,35 @@ const sceneHelp = meowHelp({
   name: 'meld-cli scene',
   flags,
   commands,
-  description: 'Manage scenes in Meld',
+  desc: 'Manage scenes in Meld',
   defaults: false
 })
 
-function sceneList (channel) {
+function sceneList (channel, showId) {
   if (!channel.objects || !channel.objects.meld) {
     return Promise.reject(new Error('Meld object not found in channel.'))
   }
 
+  const headers = [{ content: 'Scene Name', hAlign: 'center' }, { content: 'Active', hAlign: 'center' }]
+  if (showId) {
+    headers.push({ content: 'ID', hAlign: 'center' })
+  }
   const table = new Table({
     style: {
       head: ['none'],
       compact: true
     },
-    head: [{ content: 'Scene Name', hAlign: 'center' }, { content: 'ID', hAlign: 'center' }]
+    head: headers
   })
 
   const meld = channel.objects.meld
   for (const [key, value] of Object.entries(meld.session.items)) {
     if (value.type === 'scene') {
-      table.push([highlight(value.name), highlight(key)])
+      if (showId) {
+        table.push([highlight(value.name), { content: value.current ? highlight('✓') : '✗', hAlign: 'center' }, highlight(key)])
+      } else {
+        table.push([highlight(value.name), { content: value.current ? highlight('✓') : '✗', hAlign: 'center' }])
+      }
     }
   }
   if (table.length === 0) {
@@ -82,7 +94,7 @@ function sceneSwitch (channel, sceneName) {
   })
 }
 
-function sceneCurrent (channel) {
+function sceneCurrent (channel, showId) {
   if (!channel.objects || !channel.objects.meld) {
     return Promise.reject(new Error('Meld object not found in channel.'))
   }
@@ -90,7 +102,10 @@ function sceneCurrent (channel) {
   const meld = channel.objects.meld
   for (const [key, value] of Object.entries(meld.session.items)) {
     if (value.type === 'scene' && value.current) {
-      return Promise.resolve(`Current scene: ${highlight(value.name)} (ID: ${highlight(key)})`)
+      if (showId) {
+        return Promise.resolve(`Current scene: ${highlight(value.name)} (ID: ${highlight(key)})`)
+      }
+      return Promise.resolve(`Current scene: ${highlight(value.name)}`)
     }
   }
   return Promise.reject(new Error('No current scene found.'))

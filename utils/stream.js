@@ -24,7 +24,7 @@ const streamHelp = meowHelp({
   name: 'meld-cli stream',
   flags,
   commands,
-  description: 'Manage streaming in Meld',
+  desc: 'Manage streaming in Meld',
   defaults: false
 })
 

@@ -29,7 +29,7 @@ const audioHelp = meowHelp({
   name: 'meld-cli audio',
   flags,
   commands,
-  description: 'Manage audio settings in Meld',
+  desc: 'Manage audio settings in Meld',
   defaults: false
 })
 

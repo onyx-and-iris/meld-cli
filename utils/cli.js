@@ -43,7 +43,6 @@ const helpText = meowHelp({
   name: 'meld-cli',
   flags,
   commands,
-  description: 'A command-line interface for managing scenes in Meld',
   defaults: false
 })
 

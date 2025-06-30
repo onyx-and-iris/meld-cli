@@ -33,7 +33,7 @@ socket.onopen = function () {
         switch (sceneCommand) {
           case 'list':
             channel = new QWebChannel(socket, function (channel) {
-              sceneList(channel)
+              sceneList(channel, flags.id)
                 .then((scenes) => {
                   console.log(scenes)
                   socket.close()
@@ -68,7 +68,7 @@ socket.onopen = function () {
             break
           case 'current':
             channel = new QWebChannel(socket, function (channel) {
-              sceneCurrent(channel)
+              sceneCurrent(channel, flags.id)
                 .then((message) => {
                   console.log(message)
                   socket.close()

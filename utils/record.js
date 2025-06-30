@@ -24,7 +24,7 @@ const recordHelp = meowHelp({
   name: 'meld-cli record',
   flags,
   commands,
-  description: 'Manage recording in Meld',
+  desc: 'Manage recording in Meld',
   defaults: false
 })
 
