@@ -1,43 +1,43 @@
-import meow from "meow";
-import meowHelp from "cli-meow-help";
+import meow from 'meow'
+import meowHelp from 'cli-meow-help'
 
 const commands = {
-    scene: {
-        desc: "Manage scenes",
-    },
-    audio: {
-        desc: "Manage audio settings",
-    },
-    stream: {
-        desc: "Manage streaming",
-    },
-    record: {
-        desc: "Manage recording",
-    },
-};
+  scene: {
+    desc: 'Manage scenes'
+  },
+  audio: {
+    desc: 'Manage audio settings'
+  },
+  stream: {
+    desc: 'Manage streaming'
+  },
+  record: {
+    desc: 'Manage recording'
+  }
+}
 
 const flags = {
-    help: {
-        type: "boolean",
-        shortFlag: "h",
-        description: "Display help information"
-    },
-    version: {
-        type: "boolean",
-        shortFlag: "v",
-        description: "Display the version number"
-    }
+  help: {
+    type: 'boolean',
+    shortFlag: 'h',
+    description: 'Display help information'
+  },
+  version: {
+    type: 'boolean',
+    shortFlag: 'v',
+    description: 'Display the version number'
+  }
 }
 
 const helpText = meowHelp({
-    name: "meld-cli",
-    flags,
-    commands,
-    description: "A command-line interface for managing scenes in Meld",
-    defaults: false,
-});
+  name: 'meld-cli',
+  flags,
+  commands,
+  description: 'A command-line interface for managing scenes in Meld',
+  defaults: false
+})
 
 export default meow(helpText, {
-    importMeta: import.meta,
-    flags,
+  importMeta: import.meta,
+  flags
 })

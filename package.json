@@ -26,8 +26,14 @@
     "meld-cli": "index.js"
   },
   "dependencies": {
+    "cli-color": "^2.0.4",
     "cli-meow-help": "^4.0.0",
+    "cli-table3": "^0.6.5",
     "meow": "^13.2.0",
-    "qwebchannel": "^6.2.0"
+    "qwebchannel": "^6.2.0",
+    "ws": "^8.18.3"
+  },
+  "devDependencies": {
+    "standard": "^17.1.2"
   }
 }
