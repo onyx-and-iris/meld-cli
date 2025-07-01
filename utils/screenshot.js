@@ -18,9 +18,9 @@ const screenshotHelp = meowHelp({
   defaults: false
 })
 
-async function takeScreenshot (channel) {
+async function screenshotTake (channel) {
   await channel.objects.meld.sendCommand('meld.screenshot')
-  return 'Screenshot command sent successfully.'
+  return 'Screenshot taken successfully.'
 }
 
-export { screenshotHelp, takeScreenshot }
+export { screenshotHelp, screenshotTake }

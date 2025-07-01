@@ -19,6 +19,9 @@ const commands = {
   },
   screenshot: {
     desc: 'Take a screenshot'
+  },
+  virtualcam: {
+    desc: 'Manage virtual camera settings'
   }
 }
 

@@ -18,9 +18,9 @@ const clipHelp = meowHelp({
   defaults: false
 })
 
-async function saveClip (channel) {
+async function clipSave (channel) {
   await channel.objects.meld.sendCommand('meld.recordClip')
-  return 'Clip command sent successfully.'
+  return 'Clip saved successfully.'
 }
 
-export { clipHelp, saveClip }
+export { clipHelp, clipSave }

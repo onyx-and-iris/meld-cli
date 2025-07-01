@@ -8,8 +8,9 @@ import { sceneHelp, sceneList, sceneSwitch, sceneCurrent } from './utils/scene.j
 import { audioHelp, audioList, audioMute, audioUnmute, audioToggle, audioStatus } from './utils/audio.js'
 import { streamHelp, streamStart, streamStop, streamToggle, streamStatus } from './utils/stream.js'
 import { recordHelp, recordStart, recordStop, recordToggle, recordStatus } from './utils/record.js'
-import { clipHelp, saveClip } from './utils/clip.js'
-import { screenshotHelp, takeScreenshot } from './utils/screenshot.js'
+import { clipHelp, clipSave } from './utils/clip.js'
+import { screenshotHelp, screenshotTake } from './utils/screenshot.js'
+import { virtualcamHelp, virtualcamToggle } from './utils/virtualcam.js'
 
 const input = cli.input
 const flags = cli.flags
@@ -66,7 +67,8 @@ socket.onopen = function () {
         stream: streamHelp,
         record: recordHelp,
         clip: clipHelp,
-        screenshot: screenshotHelp
+        screenshot: screenshotHelp,
+        virtualcam: virtualcamHelp
       }
 
       if (flags.help && helpMap[command]) {
@@ -170,16 +172,23 @@ socket.onopen = function () {
       } else if (command === 'clip') {
         const clipCommand = input[1]
         if (clipCommand === 'save') {
-          withChannel(socket, (channel) => saveClip(channel))
+          withChannel(socket, (channel) => clipSave(channel))
         } else {
           printHelp(clipHelp)
         }
       } else if (command === 'screenshot') {
         const screenshotCommand = input[1]
         if (screenshotCommand === 'take') {
-          withChannel(socket, (channel) => takeScreenshot(channel))
+          withChannel(socket, (channel) => screenshotTake(channel))
         } else {
           printHelp(screenshotHelp)
+        }
+      } else if (command === 'virtualcam') {
+        const virtualcamCommand = input[1]
+        if (virtualcamCommand === 'toggle') {
+          withChannel(socket, (channel) => virtualcamToggle(channel))
+        } else {
+          printHelp(virtualcamHelp)
         }
       } else {
         printHelp(cli.help)
