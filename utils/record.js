@@ -7,6 +7,9 @@ const commands = {
   stop: {
     desc: 'Stop recording'
   },
+  toggle: {
+    desc: 'Toggle recording state'
+  },
   status: {
     desc: 'Show the current recording status'
   }
@@ -70,6 +73,23 @@ function recordStop (channel) {
   })
 }
 
+function recordToggle (channel) {
+  if (!channel.objects || !channel.objects.meld) {
+    return Promise.reject(new Error('Meld object not found in channel.'))
+  }
+
+  const meld = channel.objects.meld
+  return new Promise((resolve, reject) => {
+    meld.toggleRecord()
+      .then(() => {
+        resolve(`Recording ${meld.isRecording ? 'stopped' : 'started'} successfully.`)
+      })
+      .catch((err) => {
+        reject(err)
+      })
+  })
+}
+
 function recordStatus (channel) {
   if (!channel.objects || !channel.objects.meld) {
     return Promise.reject(new Error('Meld object not found in channel.'))
@@ -83,5 +103,6 @@ export {
   recordHelp,
   recordStart,
   recordStop,
+  recordToggle,
   recordStatus
 }

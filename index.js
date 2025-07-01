@@ -6,8 +6,8 @@ import WebSocket from 'ws'
 import cli from './utils/cli.js'
 import { sceneHelp, sceneList, sceneSwitch, sceneCurrent } from './utils/scene.js'
 import { audioHelp, audioList, audioMute, audioUnmute, audioToggle, audioStatus } from './utils/audio.js'
-import { streamHelp, streamStart, streamStop, streamStatus } from './utils/stream.js'
-import { recordHelp, recordStart, recordStop, recordStatus } from './utils/record.js'
+import { streamHelp, streamStart, streamStop, streamToggle, streamStatus } from './utils/stream.js'
+import { recordHelp, recordStart, recordStop, recordToggle, recordStatus } from './utils/record.js'
 
 const input = cli.input
 const flags = cli.flags
@@ -225,6 +225,21 @@ socket.onopen = function () {
                 })
             })
             break
+          case 'toggle':
+            channel = new QWebChannel(socket, function (channel) {
+              streamToggle(channel)
+                .then((message) => {
+                  console.log(message)
+                  socket.close()
+                  process.exit(0)
+                })
+                .catch((err) => {
+                  console.error(`${err}`)
+                  socket.close()
+                  process.exit(1)
+                })
+            })
+            break
           case 'status':
             channel = new QWebChannel(socket, function (channel) {
               streamStatus(channel)
@@ -272,6 +287,21 @@ socket.onopen = function () {
           case 'stop':
             channel = new QWebChannel(socket, function (channel) {
               recordStop(channel)
+                .then((message) => {
+                  console.log(message)
+                  socket.close()
+                  process.exit(0)
+                })
+                .catch((err) => {
+                  console.error(`${err}`)
+                  socket.close()
+                  process.exit(1)
+                })
+            })
+            break
+          case 'toggle':
+            channel = new QWebChannel(socket, function (channel) {
+              recordToggle(channel)
                 .then((message) => {
                   console.log(message)
                   socket.close()

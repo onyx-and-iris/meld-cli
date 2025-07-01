@@ -7,6 +7,9 @@ const commands = {
   stop: {
     desc: 'Stop streaming'
   },
+  toggle: {
+    desc: 'Toggle streaming state'
+  },
   status: {
     desc: 'Show the current streaming status'
   }
@@ -70,6 +73,23 @@ function streamStop (channel) {
   })
 }
 
+function streamToggle (channel) {
+  if (!channel.objects || !channel.objects.meld) {
+    return Promise.reject(new Error('Meld object not found in channel.'))
+  }
+
+  const meld = channel.objects.meld
+  return new Promise((resolve, reject) => {
+    meld.toggleStream()
+      .then(() => {
+        resolve(`Streaming ${meld.isStreaming ? 'stopped' : 'started'} successfully.`)
+      })
+      .catch((err) => {
+        reject(err)
+      })
+  })
+}
+
 function streamStatus (channel) {
   if (!channel.objects || !channel.objects.meld) {
     return Promise.reject(new Error('Meld object not found in channel.'))
@@ -82,6 +102,7 @@ function streamStatus (channel) {
 export {
   streamStart,
   streamStop,
+  streamToggle,
   streamStatus,
   streamHelp
 }
