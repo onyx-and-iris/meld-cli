@@ -172,6 +172,14 @@ meld-cli clip save
 meld-cli screenshot take
 ```
 
+#### Virtual Camera
+
+-   toggle: Toggle the virtual camera on or off
+
+```console
+meld-cli virtualcam toggle
+```
+
 ## Special Thanks
 
 -   Meld team for providing the [WebChannel API](https://github.com/MeldStudio/streamdeck/blob/main/WebChannelAPI.md) on which this CLI depends.
