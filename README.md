@@ -118,6 +118,12 @@ meld-cli stream start
 meld-cli stream stop
 ```
 
+-   toggle: Toggle streaming state
+
+```console
+meld-cli stream toggle
+```
+
 -   status: Show the current streaming status
 
 ```console
@@ -136,6 +142,12 @@ meld-cli record start
 
 ```console
 meld-cli record stop
+```
+
+-   toggle: Toggle recording state
+
+```console
+meld-cli record toggle
 ```
 
 -   status: Show the current recording status
