@@ -158,18 +158,18 @@ meld-cli record status
 
 #### Clip
 
-Save a clip
+-   save: Save a clip
 
 ```console
-meld-cli clip
+meld-cli clip save
 ```
 
 #### Screenshot
 
-Take a screenshot
+-   take: Take a screenshot
 
 ```console
-meld-cli screenshot
+meld-cli screenshot take
 ```
 
 ## Special Thanks
