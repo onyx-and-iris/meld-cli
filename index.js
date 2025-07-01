@@ -98,7 +98,7 @@ socket.onopen = function () {
             withChannel(socket, (channel) => audioList(channel, flags.id))
             break
           case 'mute':
-            if (!audioName) {
+            if (!audioArguments[0]) {
               console.error('Error: Audio name is required for the mute command.')
               process.exit(1)
             }
@@ -112,9 +112,17 @@ socket.onopen = function () {
             withChannel(socket, (channel) => audioUnmute(channel, audioArguments[0]))
             break
           case 'toggle':
+            if (!audioArguments[0]) {
+              console.error('Error: Audio name is required for the toggle command.')
+              process.exit(1)
+            }
             withChannel(socket, (channel) => audioToggle(channel, audioArguments[0]))
             break
           case 'status':
+            if (!audioArguments[0]) {
+              console.error('Error: Audio name is required for the status command.')
+              process.exit(1)
+            }
             withChannel(socket, (channel) => audioStatus(channel, audioArguments[0]))
             break
           default:
