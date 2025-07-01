@@ -8,8 +8,8 @@ import { sceneHelp, sceneList, sceneSwitch, sceneCurrent } from './utils/scene.j
 import { audioHelp, audioList, audioMute, audioUnmute, audioToggle, audioStatus } from './utils/audio.js'
 import { streamHelp, streamStart, streamStop, streamToggle, streamStatus } from './utils/stream.js'
 import { recordHelp, recordStart, recordStop, recordToggle, recordStatus } from './utils/record.js'
-import { recordClip } from './utils/clip.js'
-import { recordScreenshot } from './utils/screenshot.js'
+import { clipHelp, saveClip } from './utils/clip.js'
+import { screenshotHelp, takeScreenshot } from './utils/screenshot.js'
 
 const input = cli.input
 const flags = cli.flags
@@ -18,6 +18,15 @@ const address = flags.host ?? process.env.MELD_CLI_HOST ?? 'localhost'
 const port = flags.port ?? process.env.MELD_CLI_PORT ?? 13376
 
 const socket = new WebSocket(`ws://${address}:${port}`)
+
+/**
+ * Print help information.
+ * @param {string} helpText 
+ */
+function printHelp(helpText) {
+  console.log(helpText)
+  process.exit(0)
+}
 
 /**
  * Helper to wrap QWebChannel usage and handle promise-based command execution.
@@ -49,13 +58,21 @@ function withChannel(socket, fn) {
 socket.onopen = function () {
   (() => {
     try {
-      if (input[0] === 'scene') {
-        if (flags.help) {
-          console.log(sceneHelp)
-          socket.close()
-          process.exit(0)
-        }
+      const command = input[0]
+      const helpMap = {
+        scene: sceneHelp,
+        audio: audioHelp,
+        stream: streamHelp,
+        record: recordHelp,
+        clip: clipHelp,
+        screenshot: screenshotHelp
+      }
 
+      if (flags.help && helpMap[command]) {
+        printHelp(helpMap[command])
+      }
+
+      if (command === 'scene') {
         const [sceneCommand, ...sceneArguments] = input.slice(1)
         switch (sceneCommand) {
           case 'list':
@@ -72,19 +89,10 @@ socket.onopen = function () {
             withChannel(socket, (channel) => sceneCurrent(channel, flags.id))
             break
           default:
-            console.log(sceneHelp)
-            socket.close()
-            process.exit(0)
+            printHelp(sceneHelp)
         }
-      } else if (input[0] === 'audio') {
-        if (flags.help) {
-          console.log(audioHelp)
-          socket.close()
-          process.exit(0)
-        }
-
-        const audioCommand = input[1]
-        const audioName = input[2]
+      } else if (command === 'audio') {
+        const [audioCommand, ...audioArguments] = input.slice(1)
         switch (audioCommand) {
           case 'list':
             withChannel(socket, (channel) => audioList(channel, flags.id))
@@ -94,33 +102,25 @@ socket.onopen = function () {
               console.error('Error: Audio name is required for the mute command.')
               process.exit(1)
             }
-            withChannel(socket, (channel) => audioMute(channel, audioName))
+            withChannel(socket, (channel) => audioMute(channel, audioArguments[0]))
             break
           case 'unmute':
-            if (!audioName) {
+            if (!audioArguments[0]) {
               console.error('Error: Audio name is required for the unmute command.')
               process.exit(1)
             }
-            withChannel(socket, (channel) => audioUnmute(channel, audioName))
+            withChannel(socket, (channel) => audioUnmute(channel, audioArguments[0]))
             break
           case 'toggle':
-            withChannel(socket, (channel) => audioToggle(channel, audioName))
+            withChannel(socket, (channel) => audioToggle(channel, audioArguments[0]))
             break
           case 'status':
-            withChannel(socket, (channel) => audioStatus(channel, audioName))
+            withChannel(socket, (channel) => audioStatus(channel, audioArguments[0]))
             break
           default:
-            console.log(audioHelp)
-            socket.close()
-            process.exit(0)
+            printHelp(audioHelp)
         }
-      } else if (input[0] === 'stream') {
-        if (flags.help) {
-          console.log(streamHelp)
-          socket.close()
-          process.exit(0)
-        }
-
+      } else if (command === 'stream') {
         const streamCommand = input[1]
         switch (streamCommand) {
           case 'start':
@@ -140,13 +140,7 @@ socket.onopen = function () {
             socket.close()
             process.exit(0)
         }
-      } else if (input[0] === 'record') {
-        if (flags.help) {
-          console.log(recordHelp)
-          socket.close()
-          process.exit(0)
-        }
-
+      } else if (command === 'record') {
         const recordCommand = input[1]
         switch (recordCommand) {
           case 'start':
@@ -162,33 +156,29 @@ socket.onopen = function () {
             withChannel(socket, (channel) => recordStatus(channel))
             break
           default:
-            console.log(recordHelp)
-            socket.close()
-            process.exit(0)
+            printHelp(recordHelp)
         }
-      } else if (input[0] === 'clip') {
-        if (flags.help) {
-          console.log(`usage: meld-cli clip`)
-          socket.close()
-          process.exit(0)
+      } else if (command === 'clip') {
+        const clipCommand = input[1]
+        if (clipCommand === 'save') {
+          withChannel(socket, (channel) => saveClip(channel))
+        } else {
+          printHelp(clipHelp)
         }
-
-        withChannel(socket, (channel) => recordClip(channel))
-      } else if (input[0] === 'screenshot') {
-        if (flags.help) {
-          console.log(`usage: meld-cli screenshot`)
-          socket.close()
-          process.exit(0)
+      } else if (command === 'screenshot') {
+        const screenshotCommand = input[1]
+        if (screenshotCommand === 'take') {
+          withChannel(socket, (channel) => takeScreenshot(channel))
+        } else {
+          printHelp(screenshotHelp)
         }
-
-        withChannel(socket, (channel) => recordScreenshot(channel))
       } else {
-        console.log('Unknown command. Use meld-cli --help for available commands.')
+        printHelp(cli.help)
         socket.close()
-        process.exit(0)
+        process.exit(1)
       }
     } catch (error) {
-      console.error('Error handling CLI flags:', error)
+      console.error(`Error: ${error.message}`)
     }
   })()
 }

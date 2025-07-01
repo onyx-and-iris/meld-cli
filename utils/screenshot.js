@@ -1,11 +1,30 @@
-function recordScreenshot(channel) {
-  return new Promise((resolve, reject) => {
-    channel.objects.meld.sendCommand('meld.screenshot').then(() => {
-      resolve('Screenshot command sent successfully.')
-    }).catch((err) => {
-      reject(err)
-    })
-  })
+import meowHelp from 'cli-meow-help'
+
+const screenshotHelp = meowHelp({
+  name: 'meld-cli screenshot',
+  desc: 'Manage screenshots in Meld',
+  commands: {
+    take: {
+      desc: 'Take a screenshot'
+    }
+  },
+  flags: {
+    help: {
+      type: 'boolean',
+      shortFlag: 'h',
+      desc: 'Display help information'
+    }
+  },
+  defaults: false
+})
+
+async function takeScreenshot(channel) {
+  try {
+    await channel.objects.meld.sendCommand('meld.screenshot');
+    return 'Screenshot command sent successfully.';
+  } catch (err) {
+    throw err;
+  }
 }
 
-export { recordScreenshot }
+export { screenshotHelp, takeScreenshot }
