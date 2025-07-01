@@ -21,9 +21,9 @@ const socket = new WebSocket(`ws://${address}:${port}`)
 
 /**
  * Print help information.
- * @param {string} helpText 
+ * @param {string} helpText
  */
-function printHelp(helpText) {
+function printHelp (helpText) {
   console.log(helpText)
   process.exit(0)
 }
@@ -33,7 +33,8 @@ function printHelp(helpText) {
  * @param {WebSocket} socket - The websocket instance.
  * @param {function} fn - The function to execute with the channel.
  */
-function withChannel(socket, fn) {
+function withChannel (socket, fn) {
+  // eslint-disable-next-line no-new
   new QWebChannel(socket, function (channel) {
     fn(channel)
       .then((result) => {
