@@ -47,7 +47,7 @@ function streamStart (channel) {
         resolve('Streaming started successfully.')
       })
       .catch((err) => {
-        reject(err)
+        reject(new Error(`Failed to start streaming: ${err.message}`))
       })
   })
 }
@@ -68,7 +68,7 @@ function streamStop (channel) {
         resolve('Streaming stopped successfully.')
       })
       .catch((err) => {
-        reject(err)
+        reject(new Error(`Failed to stop streaming: ${err.message}`))
       })
   })
 }
@@ -85,7 +85,7 @@ function streamToggle (channel) {
         resolve(`Streaming ${meld.isStreaming ? 'stopped' : 'started'} successfully.`)
       })
       .catch((err) => {
-        reject(err)
+        reject(new Error(`Failed to toggle streaming: ${err.message}`))
       })
   })
 }

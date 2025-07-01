@@ -4,6 +4,7 @@ import { QWebChannel } from 'qwebchannel'
 import WebSocket from 'ws'
 
 import cli from './utils/cli.js'
+import style from './utils/style.js'
 import { sceneHelp, sceneList, sceneSwitch, sceneCurrent } from './utils/scene.js'
 import { audioHelp, audioList, audioMute, audioUnmute, audioToggle, audioStatus } from './utils/audio.js'
 import { streamHelp, streamStart, streamStop, streamToggle, streamStatus } from './utils/stream.js'
@@ -29,6 +30,14 @@ function printHelp (helpText) {
   process.exit(0)
 }
 
+/** * Print an error message and exit the process.
+ * @param {string} message - The error message to print.
+ */
+function printError (message) {
+  console.error(style.err(message))
+  process.exit(1)
+}
+
 /**
  * Helper to wrap QWebChannel usage and handle promise-based command execution.
  * @param {WebSocket} socket - The websocket instance.
@@ -41,16 +50,14 @@ function withChannel (socket, fn) {
       .then((result) => {
         if (typeof result === 'object' && result !== null && typeof result.toString === 'function') {
           console.log(result.toString())
-        } else {
-          if (result !== undefined) {
-            console.log(result)
-          }
+        } else if (result !== undefined) {
+          console.log(result)
         }
         socket.close()
         process.exit(0)
       })
       .catch((err) => {
-        console.error(`${err}`)
+        console.error(style.err(err))
         socket.close()
         process.exit(1)
       })
@@ -83,8 +90,7 @@ socket.onopen = function () {
             break
           case 'switch':
             if (!sceneArguments[0]) {
-              console.error('Error: Scene name is required for the switch command.')
-              process.exit(1)
+              printError('Error: Scene name is required for the switch command.')
             }
             withChannel(socket, (channel) => sceneSwitch(channel, sceneArguments[0]))
             break
@@ -102,29 +108,25 @@ socket.onopen = function () {
             break
           case 'mute':
             if (!audioArguments[0]) {
-              console.error('Error: Audio name is required for the mute command.')
-              process.exit(1)
+              printError('Error: Audio name is required for the mute command.')
             }
             withChannel(socket, (channel) => audioMute(channel, audioArguments[0]))
             break
           case 'unmute':
             if (!audioArguments[0]) {
-              console.error('Error: Audio name is required for the unmute command.')
-              process.exit(1)
+              printError('Error: Audio name is required for the unmute command.')
             }
             withChannel(socket, (channel) => audioUnmute(channel, audioArguments[0]))
             break
           case 'toggle':
             if (!audioArguments[0]) {
-              console.error('Error: Audio name is required for the toggle command.')
-              process.exit(1)
+              printError('Error: Audio name is required for the toggle command.')
             }
             withChannel(socket, (channel) => audioToggle(channel, audioArguments[0]))
             break
           case 'status':
             if (!audioArguments[0]) {
-              console.error('Error: Audio name is required for the status command.')
-              process.exit(1)
+              printError('Error: Audio name is required for the status command.')
             }
             withChannel(socket, (channel) => audioStatus(channel, audioArguments[0]))
             break

@@ -47,7 +47,7 @@ function recordStart (channel) {
         resolve('Recording started successfully.')
       })
       .catch((err) => {
-        reject(err)
+        reject(new Error(`Failed to start recording: ${err.message}`))
       })
   })
 }
@@ -68,7 +68,7 @@ function recordStop (channel) {
         resolve('Recording stopped successfully.')
       })
       .catch((err) => {
-        reject(err)
+        reject(new Error(`Failed to stop recording: ${err.message}`))
       })
   })
 }
@@ -85,7 +85,7 @@ function recordToggle (channel) {
         resolve(`Recording ${meld.isRecording ? 'stopped' : 'started'} successfully.`)
       })
       .catch((err) => {
-        reject(err)
+        reject(new Error(`Failed to toggle recording: ${err.message}`))
       })
   })
 }
