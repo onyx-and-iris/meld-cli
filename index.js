@@ -8,18 +8,46 @@ import { sceneHelp, sceneList, sceneSwitch, sceneCurrent } from './utils/scene.j
 import { audioHelp, audioList, audioMute, audioUnmute, audioToggle, audioStatus } from './utils/audio.js'
 import { streamHelp, streamStart, streamStop, streamToggle, streamStatus } from './utils/stream.js'
 import { recordHelp, recordStart, recordStop, recordToggle, recordStatus } from './utils/record.js'
+import { recordClip } from './utils/clip.js'
+import { recordScreenshot } from './utils/screenshot.js'
 
 const input = cli.input
 const flags = cli.flags
 
-const address = flags.host || process.env.MELD_CLI_HOST || 'localhost'
-const port = flags.port || process.env.MELD_CLI_PORT || 13376
+const address = flags.host ?? process.env.MELD_CLI_HOST ?? 'localhost'
+const port = flags.port ?? process.env.MELD_CLI_PORT ?? 13376
 
 const socket = new WebSocket(`ws://${address}:${port}`)
 
+/**
+ * Helper to wrap QWebChannel usage and handle promise-based command execution.
+ * @param {WebSocket} socket - The websocket instance.
+ * @param {function} fn - The function to execute with the channel.
+ */
+function withChannel(socket, fn) {
+  new QWebChannel(socket, function (channel) {
+    fn(channel)
+      .then((result) => {
+        if (typeof result === 'object' && result !== null && typeof result.toString === 'function') {
+          console.log(result.toString())
+        } else {
+          if (result !== undefined) {
+            console.log(result)
+          }
+        }
+        socket.close()
+        process.exit(0)
+      })
+      .catch((err) => {
+        console.error(`${err}`)
+        socket.close()
+        process.exit(1)
+      })
+  })
+}
+
 socket.onopen = function () {
   (() => {
-    let channel
     try {
       if (input[0] === 'scene') {
         if (flags.help) {
@@ -28,58 +56,20 @@ socket.onopen = function () {
           process.exit(0)
         }
 
-        const sceneCommand = input[1]
-        const sceneArguments = input.slice(2)
+        const [sceneCommand, ...sceneArguments] = input.slice(1)
         switch (sceneCommand) {
           case 'list':
-            channel = new QWebChannel(socket, function (channel) {
-              sceneList(channel, flags.id)
-                .then((table) => {
-                  console.log(table.toString())
-                  socket.close()
-                  process.exit(0)
-                })
-                .catch((err) => {
-                  console.error(`${err}`)
-                  socket.close()
-                  process.exit(1)
-                })
-            })
+            withChannel(socket, (channel) => sceneList(channel, flags.id))
             break
           case 'switch':
             if (!sceneArguments[0]) {
               console.error('Error: Scene name is required for the switch command.')
               process.exit(1)
             }
-
-            channel = new QWebChannel(socket, function (channel) {
-              sceneSwitch(channel, sceneArguments[0])
-                .then((message) => {
-                  console.log(message)
-                  socket.close()
-                  process.exit(0)
-                })
-                .catch((err) => {
-                  console.error(`${err}`)
-                  socket.close()
-                  process.exit(1)
-                })
-            })
+            withChannel(socket, (channel) => sceneSwitch(channel, sceneArguments[0]))
             break
           case 'current':
-            channel = new QWebChannel(socket, function (channel) {
-              sceneCurrent(channel, flags.id)
-                .then((message) => {
-                  console.log(message)
-                  socket.close()
-                  process.exit(0)
-                })
-                .catch((err) => {
-                  console.error(`${err}`)
-                  socket.close()
-                  process.exit(1)
-                })
-            })
+            withChannel(socket, (channel) => sceneCurrent(channel, flags.id))
             break
           default:
             console.log(sceneHelp)
@@ -97,89 +87,27 @@ socket.onopen = function () {
         const audioName = input[2]
         switch (audioCommand) {
           case 'list':
-            channel = new QWebChannel(socket, function (channel) {
-              audioList(channel, flags.id)
-                .then((table) => {
-                  console.log(table.toString())
-                  socket.close()
-                  process.exit(0)
-                })
-                .catch((err) => {
-                  console.error(`${err}`)
-                  socket.close()
-                  process.exit(1)
-                })
-            })
+            withChannel(socket, (channel) => audioList(channel, flags.id))
             break
           case 'mute':
             if (!audioName) {
               console.error('Error: Audio name is required for the mute command.')
               process.exit(1)
             }
-
-            channel = new QWebChannel(socket, function (channel) {
-              audioMute(channel, audioName)
-                .then((message) => {
-                  console.log(message)
-                  socket.close()
-                  process.exit(0)
-                })
-                .catch((err) => {
-                  console.error(`${err}`)
-                  socket.close()
-                  process.exit(1)
-                })
-            })
+            withChannel(socket, (channel) => audioMute(channel, audioName))
             break
           case 'unmute':
             if (!audioName) {
               console.error('Error: Audio name is required for the unmute command.')
               process.exit(1)
             }
-
-            channel = new QWebChannel(socket, function (channel) {
-              audioUnmute(channel, audioName)
-                .then((message) => {
-                  console.log(message)
-                  socket.close()
-                  process.exit(0)
-                })
-                .catch((err) => {
-                  console.error(`${err}`)
-                  socket.close()
-                  process.exit(1)
-                })
-            })
+            withChannel(socket, (channel) => audioUnmute(channel, audioName))
             break
           case 'toggle':
-            channel = new QWebChannel(socket, function (channel) {
-              audioToggle(channel, audioName)
-                .then((message) => {
-                  console.log(message)
-                  socket.close()
-                  process.exit(0)
-                })
-                .catch((err) => {
-                  console.error(`${err}`)
-                  socket.close()
-                  process.exit(1)
-                })
-            })
+            withChannel(socket, (channel) => audioToggle(channel, audioName))
             break
           case 'status':
-            channel = new QWebChannel(socket, function (channel) {
-              audioStatus(channel, audioName)
-                .then((message) => {
-                  console.log(message)
-                  socket.close()
-                  process.exit(0)
-                })
-                .catch((err) => {
-                  console.error(`${err}`)
-                  socket.close()
-                  process.exit(1)
-                })
-            })
+            withChannel(socket, (channel) => audioStatus(channel, audioName))
             break
           default:
             console.log(audioHelp)
@@ -196,64 +124,16 @@ socket.onopen = function () {
         const streamCommand = input[1]
         switch (streamCommand) {
           case 'start':
-            channel = new QWebChannel(socket, function (channel) {
-              streamStart(channel)
-                .then((message) => {
-                  console.log(message)
-                  socket.close()
-                  process.exit(0)
-                })
-                .catch((err) => {
-                  console.error(`${err}`)
-                  socket.close()
-                  process.exit(1)
-                })
-            })
+            withChannel(socket, (channel) => streamStart(channel))
             break
           case 'stop':
-            channel = new QWebChannel(socket, function (channel) {
-              streamStop(channel)
-                .then((message) => {
-                  console.log(message)
-                  socket.close()
-                  process.exit(0)
-                })
-                .catch((err) => {
-                  console.error(`${err}`)
-                  socket.close()
-                  process.exit(1)
-                })
-            })
+            withChannel(socket, (channel) => streamStop(channel))
             break
           case 'toggle':
-            channel = new QWebChannel(socket, function (channel) {
-              streamToggle(channel)
-                .then((message) => {
-                  console.log(message)
-                  socket.close()
-                  process.exit(0)
-                })
-                .catch((err) => {
-                  console.error(`${err}`)
-                  socket.close()
-                  process.exit(1)
-                })
-            })
+            withChannel(socket, (channel) => streamToggle(channel))
             break
           case 'status':
-            channel = new QWebChannel(socket, function (channel) {
-              streamStatus(channel)
-                .then((message) => {
-                  console.log(message)
-                  socket.close()
-                  process.exit(0)
-                })
-                .catch((err) => {
-                  console.error(`${err}`)
-                  socket.close()
-                  process.exit(1)
-                })
-            })
+            withChannel(socket, (channel) => streamStatus(channel))
             break
           default:
             console.log(streamHelp)
@@ -270,64 +150,16 @@ socket.onopen = function () {
         const recordCommand = input[1]
         switch (recordCommand) {
           case 'start':
-            channel = new QWebChannel(socket, function (channel) {
-              recordStart(channel)
-                .then((message) => {
-                  console.log(message)
-                  socket.close()
-                  process.exit(0)
-                })
-                .catch((err) => {
-                  console.error(`${err}`)
-                  socket.close()
-                  process.exit(1)
-                })
-            })
+            withChannel(socket, (channel) => recordStart(channel))
             break
           case 'stop':
-            channel = new QWebChannel(socket, function (channel) {
-              recordStop(channel)
-                .then((message) => {
-                  console.log(message)
-                  socket.close()
-                  process.exit(0)
-                })
-                .catch((err) => {
-                  console.error(`${err}`)
-                  socket.close()
-                  process.exit(1)
-                })
-            })
+            withChannel(socket, (channel) => recordStop(channel))
             break
           case 'toggle':
-            channel = new QWebChannel(socket, function (channel) {
-              recordToggle(channel)
-                .then((message) => {
-                  console.log(message)
-                  socket.close()
-                  process.exit(0)
-                })
-                .catch((err) => {
-                  console.error(`${err}`)
-                  socket.close()
-                  process.exit(1)
-                })
-            })
+            withChannel(socket, (channel) => recordToggle(channel))
             break
           case 'status':
-            channel = new QWebChannel(socket, function (channel) {
-              recordStatus(channel)
-                .then((message) => {
-                  console.log(message)
-                  socket.close()
-                  process.exit(0)
-                })
-                .catch((err) => {
-                  console.error(`${err}`)
-                  socket.close()
-                  process.exit(1)
-                })
-            })
+            withChannel(socket, (channel) => recordStatus(channel))
             break
           default:
             console.log(recordHelp)
@@ -341,19 +173,7 @@ socket.onopen = function () {
           process.exit(0)
         }
 
-        channel = new QWebChannel(socket, function (channel) {
-          const meld = channel.objects.meld
-
-          meld.sendCommand('meld.recordClip').then(() => {
-            console.log('Clip command sent successfully.')
-            socket.close()
-            process.exit(0)
-          }).catch((err) => {
-            console.error(`${err}`)
-            socket.close()
-            process.exit(1)
-          })
-        })
+        withChannel(socket, (channel) => recordClip(channel))
       } else if (input[0] === 'screenshot') {
         if (flags.help) {
           console.log(`usage: meld-cli screenshot`)
@@ -361,19 +181,7 @@ socket.onopen = function () {
           process.exit(0)
         }
 
-        channel = new QWebChannel(socket, function (channel) {
-          const meld = channel.objects.meld
-
-          meld.sendCommand('meld.screenshot').then(() => {
-            console.log('Screenshot command sent successfully.')
-            socket.close()
-            process.exit(0)
-          }).catch((err) => {
-            console.error(`${err}`)
-            socket.close()
-            process.exit(1)
-          })
-        })
+        withChannel(socket, (channel) => recordScreenshot(channel))
       } else {
         console.log('Unknown command. Use meld-cli --help for available commands.')
         socket.close()
