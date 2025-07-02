@@ -24,7 +24,7 @@ const flags = {
 }
 
 /**
- * Contains the help information for the stream command group.
+ * Contains the help information for the virtualcam command group.
  *
  * @type {object}
  * @property {string} name - The name of the CLI command.
