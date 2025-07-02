@@ -37,7 +37,8 @@ function printHelp (helpText) {
   process.exit(0)
 }
 
-/** * Print an error message and exit the process.
+/** 
+ * Print an error message and exit the process.
  * @param {string} message - The error message to print.
  */
 function printError (message) {
