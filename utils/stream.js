@@ -1,3 +1,12 @@
+/**
+ * @file stream.js
+ * @module utils/stream
+ * @description
+ * Utilities for managing streaming in a Meld session via CLI.
+ * Provides commands to start, stop, toggle, and check the status of streaming.
+ * Integrates with cli-meow-help for command-line help.
+ */
+
 import meowHelp from 'cli-meow-help'
 
 const commands = {
@@ -23,14 +32,30 @@ const flags = {
   }
 }
 
+/**
+ * Contains the help information for the stream command group.
+ *
+ * @type {object}
+ * @property {string} name - The name of the CLI command.
+ * @property {string} desc - Description of the command's purpose.
+ * @property {object} commands - The available subcommands.
+ * @property {object} flags - The available flags for the command.
+ * @property {boolean} defaults - Indicates if default values are shown.
+ */
 const streamHelp = meowHelp({
   name: 'meld-cli stream',
-  flags,
-  commands,
   desc: 'Manage streaming in Meld',
+  commands,
+  flags,
   defaults: false
 })
 
+/**
+ * Start streaming if not already active.
+ * @function
+ * @param {Object} channel - The channel object containing Meld.
+ * @returns {Promise<string>} Resolves with a success message or rejects with an error.
+ */
 function streamStart (channel) {
   if (!channel.objects || !channel.objects.meld) {
     return Promise.reject(new Error('Meld object not found in channel.'))
@@ -51,6 +76,13 @@ function streamStart (channel) {
       })
   })
 }
+
+/**
+ * Stop streaming if currently active.
+ * @function
+ * @param {Object} channel - The channel object containing Meld.
+ * @returns {Promise<string>} Resolves with a success message or rejects with an error.
+ */
 
 function streamStop (channel) {
   if (!channel.objects || !channel.objects.meld) {
@@ -73,6 +105,12 @@ function streamStop (channel) {
   })
 }
 
+/**
+ * Toggle the streaming state.
+ * @function
+ * @param {Object} channel - The channel object containing Meld.
+ * @returns {Promise<string>} Resolves with a message indicating the new streaming state or rejects with an error.
+ */
 function streamToggle (channel) {
   if (!channel.objects || !channel.objects.meld) {
     return Promise.reject(new Error('Meld object not found in channel.'))
@@ -90,6 +128,12 @@ function streamToggle (channel) {
   })
 }
 
+/**
+ * Get the current streaming status.
+ * @function
+ * @param {Object} channel - The channel object containing Meld.
+ * @returns {Promise<string>} Resolves with a message indicating whether streaming is active or inactive.
+ */
 function streamStatus (channel) {
   if (!channel.objects || !channel.objects.meld) {
     return Promise.reject(new Error('Meld object not found in channel.'))

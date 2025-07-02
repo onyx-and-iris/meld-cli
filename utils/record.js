@@ -1,3 +1,12 @@
+/**
+ * @file record.js
+ * @module utils/record
+ * @description
+ * Utilities for managing recording state in a Meld session via CLI.
+ * Provides commands to start, stop, toggle, and check the status of recording.
+ * Integrates with cli-meow-help for command-line help.
+ */
+
 import meowHelp from 'cli-meow-help'
 
 const commands = {
@@ -23,14 +32,30 @@ const flags = {
   }
 }
 
+/**
+ * Contains the help information for the record command group.
+ *
+ * @type {object}
+ * @property {string} name - The name of the CLI command.
+ * @property {string} desc - Description of the command's purpose.
+ * @property {object} commands - The available subcommands.
+ * @property {object} flags - The available flags for the command.
+ * @property {boolean} defaults - Indicates if default values are shown.
+ */
 const recordHelp = meowHelp({
   name: 'meld-cli record',
-  flags,
-  commands,
   desc: 'Manage recording in Meld',
+  commands,
+  flags,
   defaults: false
 })
 
+/**
+ * Start recording using the Meld object in the provided channel.
+ * @function
+ * @param {Object} channel - The channel object containing Meld.
+ * @returns {Promise<string>} Resolves with a success message or rejects with an error.
+ */
 function recordStart (channel) {
   if (!channel.objects || !channel.objects.meld) {
     return Promise.reject(new Error('Meld object not found in channel.'))
@@ -52,6 +77,12 @@ function recordStart (channel) {
   })
 }
 
+/**
+ * Stop recording using the Meld object in the provided channel.
+ * @function
+ * @param {Object} channel - The channel object containing Meld.
+ * @returns {Promise<string>} Resolves with a success message or rejects with an error.
+ */
 function recordStop (channel) {
   if (!channel.objects || !channel.objects.meld) {
     return Promise.reject(new Error('Meld object not found in channel.'))
@@ -73,6 +104,12 @@ function recordStop (channel) {
   })
 }
 
+/**
+ * Toggle the recording state using the Meld object in the provided channel.
+ * @function
+ * @param {Object} channel - The channel object containing Meld.
+ * @returns {Promise<string>} Resolves with a message indicating the new recording state or rejects with an error.
+ */
 function recordToggle (channel) {
   if (!channel.objects || !channel.objects.meld) {
     return Promise.reject(new Error('Meld object not found in channel.'))
@@ -90,6 +127,12 @@ function recordToggle (channel) {
   })
 }
 
+/**
+ * Get the current recording status from the Meld object in the provided channel.
+ * @function
+ * @param {Object} channel - The channel object containing Meld.
+ * @returns {Promise<string>} Resolves with a message indicating if recording is active or inactive.
+ */
 function recordStatus (channel) {
   if (!channel.objects || !channel.objects.meld) {
     return Promise.reject(new Error('Meld object not found in channel.'))

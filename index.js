@@ -1,5 +1,12 @@
 #!/usr/bin/env node
 
+/**
+ * @file index.js
+ * @module index
+ * @description
+ * Main entry point for the Meld CLI application.
+ */
+
 import { QWebChannel } from 'qwebchannel'
 import WebSocket from 'ws'
 
