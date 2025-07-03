@@ -6,7 +6,7 @@
  * Provides commands to toggle the virtual camera on or off.
  * Integrates with cli-meow-help for command-line help.
  */
- 
+
 import meowHelp from 'cli-meow-help'
 
 const commands = {

@@ -10,15 +10,15 @@
 import { QWebChannel } from 'qwebchannel'
 import WebSocket from 'ws'
 
-import cli from './utils/cli.js'
-import style from './utils/style.js'
-import { sceneHelp, sceneList, sceneSwitch, sceneCurrent } from './utils/scene.js'
-import { audioHelp, audioList, audioMute, audioUnmute, audioToggle, audioStatus } from './utils/audio.js'
-import { streamHelp, streamStart, streamStop, streamToggle, streamStatus } from './utils/stream.js'
-import { recordHelp, recordStart, recordStop, recordToggle, recordStatus } from './utils/record.js'
-import { clipHelp, clipSave } from './utils/clip.js'
-import { screenshotHelp, screenshotTake } from './utils/screenshot.js'
-import { virtualcamHelp, virtualcamToggle } from './utils/virtualcam.js'
+import cli from '../src/cli.js'
+import style from '../src/style.js'
+import { sceneHelp, sceneList, sceneSwitch, sceneCurrent } from '../src/scene.js'
+import { audioHelp, audioList, audioMute, audioUnmute, audioToggle, audioStatus } from '../src/audio.js'
+import { streamHelp, streamStart, streamStop, streamToggle, streamStatus } from '../src/stream.js'
+import { recordHelp, recordStart, recordStop, recordToggle, recordStatus } from '../src/record.js'
+import { clipHelp, clipSave } from '../src/clip.js'
+import { screenshotHelp, screenshotTake } from '../src/screenshot.js'
+import { virtualcamHelp, virtualcamToggle } from '../src/virtualcam.js'
 
 const input = cli.input
 const flags = cli.flags
@@ -37,7 +37,7 @@ function printHelp (helpText) {
   process.exit(0)
 }
 
-/** 
+/**
  * Print an error message and exit the process.
  * @param {string} message - The error message to print.
  */
