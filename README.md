@@ -9,7 +9,7 @@ A command line interface for Meld Studio WebChannel API
 # Requirements
 
 -   [Meld Studio](https://meldstudio.co/)
--   I'm not sure which versions of node this works with but it was created with v24.3.0
+-   Tested with node v22.17.0 (lts).
 
 # Installation
 
