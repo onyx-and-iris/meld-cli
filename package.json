@@ -24,7 +24,7 @@
     "lint:fix": "standard --fix"
   },
   "bin": {
-    "meld-cli": "index.js"
+    "meld-cli": "./bin/index.js"
   },
   "dependencies": {
     "cli-color": "^2.0.4",
