@@ -104,6 +104,13 @@ meld-cli audio toggle "Mic"
 meld-cli audio status "Mic"
 ```
 
+-   gain: Adjust the gain of a specific audio track by name.
+    -   args: audioName gainValue
+
+```console
+meld-cli audio gain "System" -12.8
+```
+
 #### Stream
 
 -   start: Start streaming
