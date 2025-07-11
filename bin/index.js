@@ -13,7 +13,7 @@ import WebSocket from 'ws'
 import cli from '../src/cli.js'
 import style from '../src/style.js'
 import { sceneHelp, sceneList, sceneSwitch, sceneCurrent } from '../src/scene.js'
-import { audioHelp, audioList, audioMute, audioUnmute, audioToggle, audioStatus } from '../src/audio.js'
+import { audioHelp, audioList, audioMute, audioUnmute, audioToggle, audioStatus, audioGain } from '../src/audio.js'
 import { streamHelp, streamStart, streamStop, streamToggle, streamStatus } from '../src/stream.js'
 import { recordHelp, recordStart, recordStop, recordToggle, recordStatus } from '../src/record.js'
 import { clipHelp, clipSave } from '../src/clip.js'
@@ -137,6 +137,12 @@ socket.onopen = function () {
               printError('Error: Audio name is required for the status command.')
             }
             withChannel(socket, (channel) => audioStatus(channel, audioArguments[0]))
+            break
+          case 'gain':
+            if (!audioArguments[0] || isNaN(audioArguments[1])) {
+              printError('Error: Audio name and gain value are required for the gain command.')
+            }
+            withChannel(socket, (channel) => audioGain(channel, audioArguments[0], parseFloat(audioArguments[1])))
             break
           default:
             printHelp(audioHelp)

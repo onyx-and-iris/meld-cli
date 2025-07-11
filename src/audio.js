@@ -27,6 +27,9 @@ const commands = {
   },
   status: {
     desc: 'Show current audio status'
+  },
+  gain: {
+    desc: 'Adjust the audio gain'
   }
 }
 
@@ -238,11 +241,52 @@ function audioStatus (channel, audioName) {
   })
 }
 
+/**
+ * Adjust the gain of a specific audio track by name.
+ * @param {Object} channel - The channel object containing Meld session data.
+ * @param {string} audioName - The name of the audio track to adjust.
+ * @param {number} gainValue - The gain value to set (-60.0 to 0.0).
+ * @returns {Promise<string>} Resolves with a success message or rejects with an error.
+ */
+function audioGain (channel, audioName, gainValue) {
+  if (!channel.objects || !channel.objects.meld) {
+    return Promise.reject(new Error('Meld object not found in channel.'))
+  }
+  const meld = channel.objects.meld
+  let itemId
+  for (const [key, value] of Object.entries(meld.session.items)) {
+    if (value.type === 'track' && value.name === audioName) {
+      itemId = key
+      break
+    }
+  }
+  if (!itemId) {
+    return Promise.reject(new Error(`No audio device with name ${style.errHighlight(audioName)} found.`))
+  }
+
+  if (typeof gainValue !== 'number' || gainValue < -60.0 || gainValue > 0.0) {
+    return Promise.reject(new Error('Gain value must be between -60.0 and 0.0.'))
+  }
+  // Convert dB (-60.0 to 0.0) to linear gain (0 to 1)
+  const dbDisplay = Math.pow(10, gainValue / 20)
+
+  return new Promise((resolve, reject) => {
+    meld.setGain(itemId, dbDisplay)
+      .then(() => {
+        resolve(`Audio track ${style.highlight(audioName)} gain set to ${gainValue}.`)
+      })
+      .catch((err) => {
+        reject(new Error(`Error setting audio gain: ${err.message}`))
+      })
+  })
+}
+
 export {
   audioHelp,
   audioList,
   audioMute,
   audioUnmute,
   audioToggle,
-  audioStatus
+  audioStatus,
+  audioGain
 }
