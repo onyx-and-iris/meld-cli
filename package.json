@@ -7,9 +7,9 @@
     "meld-studio",
     "meld-cli"
   ],
-  "homepage": "https://github.com/onyx-and-iris/meld-api#readme",
+  "homepage": "https://github.com/onyx-and-iris/meld-cli#readme",
   "bugs": {
-    "url": "https://github.com/onyx-and-iris/meld-api/issues"
+    "url": "https://github.com/onyx-and-iris/meld-cli/issues"
   },
   "repository": {
     "type": "git",
